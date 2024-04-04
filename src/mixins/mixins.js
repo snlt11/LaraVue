@@ -1,9 +1,24 @@
 export default {
   methods: {
-    async loadData(route) {
-      let response = await fetch(`http://127.0.0.1:8000/api/${route}`);
-      let data = await response.json();
-      console.log(data);
+    async loadData(url) {
+      let response = await fetch(url);
+      let responseData = await response.json();
+      if (responseData.conditions) {
+        return responseData.data;
+      } else {
+        return [];
+      }
+    },
+    async sendData(url, data) {
+      let response = await fetch(url, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+      return await response.json();
     },
   },
 };

@@ -1,9 +1,9 @@
 <template>
   <h1 class="text-info text-center my-5">Login</h1>
   <div class="col-md-6 offset-md-3">
-    <form action="">
+    <form action="" @submit.prevent="userLogin">
       <div class="mb-3">
-        <label for="email" class="form-label">Email address</label>
+        <label for="email" class="form-label">Email</label>
         <input
           type="email"
           class="form-control"
@@ -14,7 +14,7 @@
         />
       </div>
       <div class="mb-3">
-        <label for="password" class="form-label">password address</label>
+        <label for="password" class="form-label">Password</label>
         <input
           type="password"
           class="form-control"
@@ -30,13 +30,16 @@
 </template>
 
 <script>
+import mixins from "@/mixins/mixins.js";
 export default {
+  mixins: [mixins],
   props: ["AuthUser"],
   data() {
     return {
       userCredentials: {
-        email: "admin@gmail.com",
+        email: "",
         password: "",
+
       },
     };
   },
@@ -45,7 +48,18 @@ export default {
       console.log(this.userCredentials.email);
     },
     passwordFileChange() {
-      console.log(this.userCredentials.password);
+      // console.log(this.userCredentials.password);
+    },
+    async userLogin() {
+      let url = this.$baseUrl + "login";
+      let responseData = await this.sendData(url, this.userCredentials);
+      if (responseData.access_token) {
+        localStorage.setItem("token", responseData.access_token);
+        this.$emit("changeLoginStatus");
+        this.$router.push({ name: "Home" });
+      } else {
+        console.log("error");
+      }
     },
   },
 };
