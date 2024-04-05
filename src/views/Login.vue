@@ -10,7 +10,7 @@
           id="email"
           name="email"
           v-model="userCredentials.email"
-          @input="emailFileChange"
+          required
         />
       </div>
       <div class="mb-3">
@@ -21,7 +21,6 @@
           id="password"
           name="password"
           v-model="userCredentials.password"
-          @input="passwordFileChange"
         />
       </div>
       <button class="btn btn-primary float-end" type="submit">Login</button>
@@ -39,17 +38,10 @@ export default {
       userCredentials: {
         email: "",
         password: "",
-
       },
     };
   },
   methods: {
-    emailFileChange() {
-      console.log(this.userCredentials.email);
-    },
-    passwordFileChange() {
-      // console.log(this.userCredentials.password);
-    },
     async userLogin() {
       let url = this.$baseUrl + "login";
       let responseData = await this.sendData(url, this.userCredentials);
@@ -58,7 +50,7 @@ export default {
         this.$emit("changeLoginStatus");
         this.$router.push({ name: "Home" });
       } else {
-        console.log("error");
+        alert(responseData.message);
       }
     },
   },
