@@ -7,7 +7,10 @@
           v-for="subcategory in allSubcategories"
           :key="subcategory.id"
         >
-          {{ subcategory.name }}
+          <router-link
+            :to="'/products/productBySubCategoryId/' + subcategory.id"
+            >{{ subcategory.name }}</router-link
+          >
         </li>
       </ul>
     </div>
@@ -25,8 +28,16 @@
               class="d-block w-100"
               alt="Image"
             />
+
+            <div class="carousel-caption d-none d-md-block">
+              <router-link
+                :to="'/products/productByCategoryId/' + category.id"
+                >{{ category.name }}</router-link
+              >
+            </div>
           </div>
         </div>
+
         <button
           class="carousel-control-prev"
           type="button"

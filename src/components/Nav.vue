@@ -26,6 +26,16 @@
           <li class="nav-item">
             <a class="nav-link text-white" href="#">Features</a>
           </li>
+          <li class="nav-item">
+            <router-link to="/cart" class="btn btn-light position-relative">
+              <i class="material-icons">shopping_cart</i>
+              <span
+                class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+              >
+              {{ cartCount }}
+              </span>
+            </router-link>
+          </li>
 
           <li class="nav-item dropdown">
             <a
@@ -38,17 +48,19 @@
               Dropdown
             </a>
             <ul class="dropdown-menu">
-              <li v-if="AuthUser"><a class="dropdown-item" href="#">Logout</a></li>
+              <li v-if="AuthUser">
+                <a class="dropdown-item" href="#">Logout</a>
+              </li>
               <div v-else>
                 <li>
-                <router-link class="dropdown-item" to="/login">
-                  Login
-                </router-link>
+                  <router-link class="dropdown-item" to="/login">
+                    Login
+                  </router-link>
                 </li>
                 <li>
-                <router-link class="dropdown-item" to="/register">
-                  Register
-                </router-link>
+                  <router-link class="dropdown-item" to="/register">
+                    Register
+                  </router-link>
                 </li>
               </div>
             </ul>
@@ -64,8 +76,9 @@
 
 <script>
 export default {
-  props: ['AuthUser'],
+  props: ["AuthUser", "cartCount"],
 };
 </script>
 
-<style></style>
+<style>
+</style>
