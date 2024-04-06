@@ -24,7 +24,9 @@
             >
           </li>
           <li class="nav-item">
-            <a class="nav-link text-white" href="#">Features</a>
+            <router-link class="nav-link text-white" to="/orders">
+              <span>Orders</span>
+            </router-link>
           </li>
           <li class="nav-item">
             <router-link to="/cart" class="btn btn-light position-relative">
@@ -32,7 +34,7 @@
               <span
                 class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
               >
-              {{ cartCount }}
+                {{ cartCount }}
               </span>
             </router-link>
           </li>
@@ -49,7 +51,9 @@
             </a>
             <ul class="dropdown-menu">
               <li v-if="AuthUser">
-                <a class="dropdown-item" href="#">Logout</a>
+                <button class="dropdown-item" @click="logoutUser">
+                  Logout
+                </button>
               </li>
               <div v-else>
                 <li>
@@ -77,8 +81,13 @@
 <script>
 export default {
   props: ["AuthUser", "cartCount"],
+  methods: {
+    logoutUser() {
+      localStorage.removeItem("token");
+      this.$emit("changeLoginStatus", false);
+    },
+  },
 };
 </script>
 
-<style>
-</style>
+<style></style>

@@ -47,7 +47,7 @@ export default {
       let responseData = await this.sendData(url, this.userCredentials);
       if (responseData.access_token) {
         localStorage.setItem("token", responseData.access_token);
-        this.$emit("changeLoginStatus");
+        this.$emit("changeLoginStatus",true);
         this.$router.push({ name: "Home" });
       } else {
         alert(responseData.message);

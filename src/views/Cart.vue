@@ -7,7 +7,7 @@
           <th scope="col">No</th>
           <th scope="col">Name</th>
           <th scope="col">Image</th>
-          <th scope="col">File</th>
+          <th scope="col">Sizes</th>
           <th scope="col">Colors</th>
           <th scope="col">Price</th>
           <th scope="col">Counts</th>
@@ -22,7 +22,7 @@
           <td>
             <img
               :src="assetsUrl + product.images.split(',')[0]"
-              alt="hello"
+              alt="test"
               style="width: 150px; height: 150px"
             />
           </td>
@@ -62,6 +62,21 @@
             </button>
           </td>
         </tr>
+        <tr>
+          <td colspan="5"><h3 class="float-end">Grand Total</h3></td>
+          <td colspan="2">
+            <h3>{{ grandTotal }}</h3>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="5"><h3 class="float-end">Bill Out</h3></td>
+          <td colspan="2">
+            <button class="btn btn-success btn-sm" @click="checkOut">
+              <i class="material-icons">attach_money</i>
+              <span>CheckOut</span>
+            </button>
+          </td>
+        </tr>
       </tbody>
     </table>
   </div>
@@ -73,12 +88,17 @@ export default {
     return {
       products: [],
       assetsUrl: this.$assetsUrl,
+      grandTotal: 0,
     };
   },
   methods: {
     loadAllProduct() {
       let data = localStorage.getItem("products");
       this.products = data ? JSON.parse(data) : [];
+      this.grandTotal = 0;
+      this.products.forEach((product) => {
+        this.grandTotal += product.count * product.price;
+      });
     },
     changeProductCount(id, count) {
       let data = localStorage.getItem("products");
@@ -94,15 +114,49 @@ export default {
     removeProduct(id) {
       let data = localStorage.getItem("products");
       let productChange = JSON.parse(data);
-      productChange.forEach(product => {
-        if(product.id == id){
-            let index = productChange.indexOf(product);
-            productChange.splice(index,1);
+      productChange.forEach((product) => {
+        if (product.id == id) {
+          let index = productChange.indexOf(product);
+          productChange.splice(index, 1);
         }
       });
       localStorage.setItem("products", JSON.stringify(productChange));
       this.loadAllProduct();
-      this.$emit("changeProductCount")
+      this.$emit("changeProductCount");
+    },
+    async checkOut() {
+      let token = localStorage.getItem("token");
+      if (token) {
+        let data = localStorage.getItem("products");
+        let productChange = JSON.parse(data);
+        if(productChange.length > 0){
+          let productArray = [];
+          productChange.forEach(product => {
+            productArray.push({id: product.id, count: product.count})
+          });
+          
+          let sendData = {orders: productChange};
+          let response = await fetch(this.$baseUrl+"order", {
+          method: "POST",
+          headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer${token}`,
+          },
+          body: JSON.stringify(sendData),
+          });
+          let responseData = await response.json();
+          if(responseData.conditions){
+            localStorage.removeItem('products');
+            this.$emit('changeProductCount')
+            this.$router.push({name: 'Home'})
+            alert(responseData.message);
+          }else{
+            alert(responseData.message);
+          }
+        }
+      } else {
+        this.$router.push({ name: "Login" });
+      }
     },
   },
   beforeMount() {
@@ -112,3 +166,5 @@ export default {
 </script>
 
 <style></style>
+import Login from './Login.vue';
+
